@@ -87,14 +87,18 @@ export function GitHubStats() {
         href={`https://github.com/${USER}`}
         target="_blank"
         rel="noreferrer"
-        title={`@${USER} on GitHub`}
+        title={`@${USER} on GitHub · ${stats.repos} repo${stats.repos === 1 ? '' : 's'}${stats.stars ? ` · ${stats.stars} stars` : ''}`}
       >
         <span className="text-faint">[ </span>
         <span className="text-dim">repos:</span>
         <span className="text-accent">{stats.repos}</span>
-        <span className="text-faint"> · </span>
-        <span className="text-dim">★</span>
-        <span className="text-accent">{stats.stars}</span>
+        {stats.stars > 0 && (
+          <>
+            <span className="text-faint"> · </span>
+            <span className="text-dim">★</span>
+            <span className="text-accent">{stats.stars}</span>
+          </>
+        )}
         <span className="text-faint"> ]</span>
       </a>
       <style>{`
