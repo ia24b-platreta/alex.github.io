@@ -1,8 +1,10 @@
 import { Nav } from './components/Nav';
+import { BootSequence } from './components/BootSequence';
 import { Hero } from './sections/Hero';
 import { About } from './sections/About';
 import { Skills } from './sections/Skills';
 import { Projects } from './sections/Projects';
+import { Terminal } from './components/Terminal';
 import { Contact } from './sections/Contact';
 
 export default function App() {
@@ -10,6 +12,7 @@ export default function App() {
     <div className="app">
       <div className="bg-vignette" aria-hidden="true" />
       <div className="bg-scanlines" aria-hidden="true" />
+      <BootSequence />
 
       <Nav />
       <main>
@@ -17,6 +20,7 @@ export default function App() {
         <About />
         <Skills />
         <Projects />
+        <Terminal />
         <Contact />
       </main>
       <footer className="footer">

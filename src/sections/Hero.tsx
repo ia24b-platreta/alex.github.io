@@ -1,6 +1,38 @@
+import { useEffect, useState } from 'react';
 import { Reveal } from '../components/Reveal';
+import { Typewriter } from '../components/Typewriter';
+
+type Step = 'banner' | 'whoami_cmd' | 'whoami_out' | 'cat_cmd' | 'cat_out' | 'help_cmd' | 'done';
+
+const ORDER: Step[] = ['banner', 'whoami_cmd', 'whoami_out', 'cat_cmd', 'cat_out', 'help_cmd', 'done'];
+const SESSION_KEY = 'hero-typed';
+
+function nextStep(s: Step): Step {
+  const i = ORDER.indexOf(s);
+  return ORDER[Math.min(i + 1, ORDER.length - 1)];
+}
 
 export function Hero() {
+  const [step, setStep] = useState<Step>(() => {
+    if (typeof window === 'undefined') return 'done';
+    if (sessionStorage.getItem(SESSION_KEY)) return 'done';
+    return 'banner';
+  });
+
+  useEffect(() => {
+    if (step === 'banner') {
+      const t = setTimeout(() => setStep('whoami_cmd'), 200);
+      return () => clearTimeout(t);
+    }
+    if (step === 'done') {
+      try { sessionStorage.setItem(SESSION_KEY, '1'); } catch { /* ignore */ }
+    }
+  }, [step]);
+
+  const reached = (s: Step) => ORDER.indexOf(step) >= ORDER.indexOf(s);
+  const showStatic = step === 'done';
+  const advance = () => setStep((s) => nextStep(s));
+
   return (
     <section id="top" className="hero">
       <div className="container hero__inner">
@@ -15,53 +47,97 @@ export function Hero() {
 `}</pre>
         </Reveal>
 
-        <Reveal delay={80}>
+        {/* whoami */}
+        {reached('whoami_cmd') && (
           <div className="hero__line">
             <span className="prompt" />
-            <span className="cmd">whoami</span>
+            {showStatic ? (
+              <span className="cmd">whoami</span>
+            ) : (
+              <Typewriter text="whoami" className="cmd" onDone={advance} />
+            )}
           </div>
-        </Reveal>
+        )}
 
-        <Reveal delay={140}>
+        {reached('whoami_out') && (
           <div className="hero__out">
-            <span className="text-bright">alex.platreta</span>
-            <span className="text-faint"> — developer · </span>
-            <span className="text-cyan">Zürich, CH</span>
+            {showStatic ? (
+              <>
+                <span className="text-bright">alex.platreta</span>
+                <span className="text-faint"> — developer · </span>
+                <span className="text-cyan">Zürich, CH</span>
+              </>
+            ) : (
+              <Typewriter
+                text="alex.platreta — developer · Zürich, CH"
+                speed={18}
+                onDone={advance}
+              />
+            )}
           </div>
-        </Reveal>
+        )}
 
-        <Reveal delay={220}>
+        {/* cat readme.md */}
+        {reached('cat_cmd') && (
           <div className="hero__line">
             <span className="prompt" />
-            <span className="cmd">cat</span> <span className="arg">readme.md</span>
+            {showStatic ? (
+              <>
+                <span className="cmd">cat</span>{' '}
+                <span className="arg">readme.md</span>
+              </>
+            ) : (
+              <Typewriter text="cat readme.md" className="cmd" onDone={advance} />
+            )}
           </div>
-        </Reveal>
+        )}
 
-        <Reveal delay={280}>
+        {reached('cat_out') && (
           <p className="hero__out">
-            I build things on the web — clean interfaces, reliable backends, and the
-            occasional weekend experiment.
+            {showStatic ? (
+              <>
+                I build things on the web — clean interfaces, reliable backends, and the
+                occasional weekend experiment.
+              </>
+            ) : (
+              <Typewriter
+                text="I build things on the web — clean interfaces, reliable backends, and the occasional weekend experiment."
+                speed={12}
+                onDone={advance}
+              />
+            )}
           </p>
-        </Reveal>
+        )}
 
-        <Reveal delay={360}>
+        {/* help + caret */}
+        {reached('help_cmd') && (
           <div className="hero__line">
             <span className="prompt" />
-            <span className="cmd">help</span>
+            {showStatic ? (
+              <span className="cmd">help</span>
+            ) : (
+              <Typewriter text="help" className="cmd" onDone={advance} />
+            )}
             <span className="caret" aria-hidden="true" />
           </div>
-        </Reveal>
+        )}
 
-        <Reveal delay={420}>
-          <div className="hero__ctas">
-            <a className="btn btn--primary" href="#projects">
-              ./view-work
-            </a>
-            <a className="btn" href="#contact">
-              ./say-hi
-            </a>
-          </div>
-        </Reveal>
+        {/* CTAs only appear once all typing finishes (or instantly on revisit) */}
+        {reached('done') && (
+          <Reveal>
+            <div className="hero__ctas">
+              <a className="btn btn--primary" href="#projects">
+                ./view-work
+              </a>
+              <a className="btn" href="#contact">
+                ./say-hi
+              </a>
+              <a className="btn" href="#terminal">
+                ./launch-shell
+              </a>
+            </div>
+          </Reveal>
+        )}
       </div>
       <style>{`
         .hero {
@@ -73,6 +149,7 @@ export function Hero() {
           flex-direction: column;
           gap: 10px;
           max-width: 760px;
+          min-height: 60vh;
         }
         .hero__banner {
           font-family: inherit;
@@ -96,14 +173,9 @@ export function Hero() {
           color: var(--text-bright);
           font-size: 0.95rem;
         }
-        .hero__line .cmd {
-          color: var(--text-bright);
-        }
-        .hero__line .arg {
-          color: var(--amber);
-        }
+        .hero__line .cmd { color: var(--text-bright); }
+        .hero__line .arg { color: var(--amber); }
         .hero__out {
-          padding-left: 0;
           color: var(--text);
           font-size: 0.95rem;
           line-height: 1.6;
