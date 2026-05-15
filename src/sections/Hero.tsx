@@ -21,7 +21,7 @@ export function Hero() {
 
   useEffect(() => {
     if (step === 'banner') {
-      const t = setTimeout(() => setStep('whoami_cmd'), 200);
+      const t = setTimeout(() => setStep('whoami_cmd'), 1200);
       return () => clearTimeout(t);
     }
     if (step === 'done') {
@@ -33,19 +33,23 @@ export function Hero() {
   const showStatic = step === 'done';
   const advance = () => setStep((s) => nextStep(s));
 
-  return (
-    <section id="top" className="hero">
-      <div className="container hero__inner">
-        <Reveal>
-          <pre className="hero__banner" aria-label="alex.platreta">{`
-   █████╗ ██╗     ███████╗██╗  ██╗
+  const banner = `   █████╗ ██╗     ███████╗██╗  ██╗
   ██╔══██╗██║     ██╔════╝╚██╗██╔╝
   ███████║██║     █████╗   ╚███╔╝
   ██╔══██║██║     ██╔══╝   ██╔██╗
   ██║  ██║███████╗███████╗██╔╝ ██╗
-  ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝
-`}</pre>
-        </Reveal>
+  ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝`;
+
+  return (
+    <section id="top" className="hero">
+      <div className="container hero__inner">
+        <div className="hero__crt" aria-label="alex.platreta">
+          <pre className="hero__banner hero__banner--main" aria-hidden="false">{banner}</pre>
+          <pre className="hero__banner hero__banner--r" aria-hidden="true">{banner}</pre>
+          <pre className="hero__banner hero__banner--b" aria-hidden="true">{banner}</pre>
+          <div className="hero__crt-scan" aria-hidden="true" />
+          <div className="hero__crt-line" aria-hidden="true" />
+        </div>
 
         {/* whoami */}
         {reached('whoami_cmd') && (
@@ -122,11 +126,10 @@ export function Hero() {
           </div>
         )}
 
-        {/* CTAs only appear once all typing finishes (or instantly on revisit) */}
         {reached('done') && (
           <Reveal>
             <div className="hero__ctas">
-              <a className="btn btn--primary" href="#projects">
+              <a className="btn btn--primary hero__cta-pulse" href="#projects">
                 ./view-work
               </a>
               <a className="btn" href="#contact">
@@ -151,42 +154,165 @@ export function Hero() {
           max-width: 760px;
           min-height: 60vh;
         }
+
+        /* ---------- CRT BANNER ---------- */
+        .hero__crt {
+          position: relative;
+          margin: 0 0 28px;
+          overflow: hidden;
+          isolation: isolate;
+        }
         .hero__banner {
           font-family: inherit;
-          color: var(--accent);
-          margin: 0 0 22px;
+          margin: 0;
           font-size: clamp(0.5rem, 1.1vw + 0.3rem, 0.85rem);
           line-height: 1.05;
           white-space: pre;
-          text-shadow: 0 0 12px color-mix(in srgb, var(--accent) 40%, transparent);
-          overflow-x: auto;
+          letter-spacing: 0;
+          font-variant-ligatures: none;
+          font-feature-settings: 'liga' 0, 'calt' 0;
+        }
+        .hero__banner--main {
+          color: var(--accent);
+          text-shadow:
+            0 0 4px color-mix(in srgb, var(--accent) 65%, transparent),
+            0 0 18px color-mix(in srgb, var(--accent) 50%, transparent),
+            0 0 36px color-mix(in srgb, var(--accent) 25%, transparent);
           position: relative;
-          background: linear-gradient(
-            90deg,
-            var(--accent) 0%,
-            var(--accent) 40%,
-            var(--text-bright) 50%,
-            var(--accent) 60%,
-            var(--accent) 100%
-          );
-          background-size: 220% 100%;
-          background-position: 100% 0;
-          background-clip: text;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
+          z-index: 3;
         }
-        @media (prefers-reduced-motion: no-preference) {
-          .hero__banner {
-            animation: banner-sheen 2.4s ease-out 0.2s 1 forwards;
-          }
+        .hero__banner--r,
+        .hero__banner--b {
+          position: absolute;
+          inset: 0;
+          mix-blend-mode: screen;
+          pointer-events: none;
+          opacity: 0.55;
         }
-        @keyframes banner-sheen {
-          0%   { background-position: 100% 0; }
-          100% { background-position: 0    0; }
+        .hero__banner--r {
+          color: #ff2e63;
+          transform: translateX(-1.5px);
+          z-index: 2;
         }
-        [data-theme='light'] .hero__banner {
+        .hero__banner--b {
+          color: #00e5ff;
+          transform: translateX(1.5px);
+          z-index: 1;
+        }
+        [data-theme='light'] .hero__banner--main {
           text-shadow: none;
         }
+        [data-theme='light'] .hero__banner--r,
+        [data-theme='light'] .hero__banner--b {
+          display: none;
+        }
+
+        /* Scanline overlay sweeping through the banner */
+        .hero__crt-scan {
+          position: absolute;
+          inset: 0;
+          background: repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 2px,
+            rgba(0, 0, 0, 0.18) 2px,
+            rgba(0, 0, 0, 0.18) 3px
+          );
+          pointer-events: none;
+          z-index: 4;
+          opacity: 0.6;
+        }
+        [data-theme='light'] .hero__crt-scan { display: none; }
+
+        /* Bright horizontal line that rolls down through the banner */
+        .hero__crt-line {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            to bottom,
+            transparent 0%,
+            transparent 45%,
+            color-mix(in srgb, var(--accent) 35%, transparent) 49%,
+            color-mix(in srgb, #ffffff 60%, transparent) 50%,
+            color-mix(in srgb, var(--accent) 35%, transparent) 51%,
+            transparent 55%,
+            transparent 100%
+          );
+          background-size: 100% 250%;
+          background-position: 0 -150%;
+          mix-blend-mode: screen;
+          pointer-events: none;
+          z-index: 5;
+        }
+        [data-theme='light'] .hero__crt-line { display: none; }
+
+        @media (prefers-reduced-motion: no-preference) {
+          .hero__crt {
+            animation: crt-power-on 1.0s cubic-bezier(0.2, 0.7, 0.2, 1) 0s 1 backwards;
+          }
+          .hero__banner--main {
+            animation:
+              banner-breathe 3.4s ease-in-out 1.0s infinite,
+              banner-flicker 9s steps(1) 1.0s infinite;
+          }
+          .hero__banner--r {
+            animation: aberration-r 2.6s ease-in-out 1.0s infinite;
+          }
+          .hero__banner--b {
+            animation: aberration-b 2.6s ease-in-out 1.0s infinite;
+          }
+          .hero__crt-line {
+            animation: scanline-roll 4.4s linear 1.0s infinite;
+          }
+        }
+
+        @keyframes crt-power-on {
+          0%   { transform: scaleY(0.02); opacity: 0; filter: brightness(1.8); }
+          18%  { transform: scaleY(0.02); opacity: 1; filter: brightness(2.5); }
+          22%  { transform: scaleY(0.05); opacity: 1; filter: brightness(2.0); }
+          100% { transform: scaleY(1);    opacity: 1; filter: brightness(1.0); }
+        }
+        @keyframes banner-breathe {
+          0%, 100% {
+            text-shadow:
+              0 0 4px  color-mix(in srgb, var(--accent) 60%, transparent),
+              0 0 14px color-mix(in srgb, var(--accent) 40%, transparent),
+              0 0 28px color-mix(in srgb, var(--accent) 18%, transparent);
+          }
+          50% {
+            text-shadow:
+              0 0 6px  color-mix(in srgb, var(--accent) 80%, transparent),
+              0 0 22px color-mix(in srgb, var(--accent) 60%, transparent),
+              0 0 44px color-mix(in srgb, var(--accent) 35%, transparent);
+          }
+        }
+        @keyframes banner-flicker {
+          0%, 100%             { opacity: 1; }
+          93%                  { opacity: 1; }
+          93.5%                { opacity: 0.6; }
+          94%                  { opacity: 1; }
+          97%                  { opacity: 1; }
+          97.5%                { opacity: 0.85; }
+          98%                  { opacity: 1; }
+        }
+        @keyframes aberration-r {
+          0%, 100% { transform: translateX(-1.5px); opacity: 0.55; }
+          25%      { transform: translateX(-2.4px); opacity: 0.7;  }
+          50%      { transform: translateX(-1px);   opacity: 0.4;  }
+          75%      { transform: translateX(-2px);   opacity: 0.6;  }
+        }
+        @keyframes aberration-b {
+          0%, 100% { transform: translateX(1.5px);  opacity: 0.55; }
+          25%      { transform: translateX(2.4px);  opacity: 0.7;  }
+          50%      { transform: translateX(1px);    opacity: 0.4;  }
+          75%      { transform: translateX(2px);    opacity: 0.6;  }
+        }
+        @keyframes scanline-roll {
+          0%   { background-position: 0 -150%; }
+          100% { background-position: 0  150%; }
+        }
+
+        /* ---------- Lines ---------- */
         .hero__line {
           display: flex;
           flex-wrap: wrap;
@@ -209,6 +335,20 @@ export function Hero() {
           flex-wrap: wrap;
           gap: 10px;
           margin-top: 24px;
+        }
+        @media (prefers-reduced-motion: no-preference) {
+          .hero__cta-pulse {
+            animation: cta-pulse 2.2s ease-in-out infinite;
+          }
+        }
+        @keyframes cta-pulse {
+          0%, 100% {
+            box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent);
+          }
+          50% {
+            box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 0%, transparent),
+                        0 0 22px color-mix(in srgb, var(--accent) 45%, transparent);
+          }
         }
       `}</style>
     </section>

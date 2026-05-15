@@ -1,6 +1,8 @@
 import { Nav } from './components/Nav';
 import { BootSequence } from './components/BootSequence';
 import { IdleScreensaver } from './components/IdleScreensaver';
+import { CursorFX } from './components/CursorFX';
+import { Konami } from './components/Konami';
 import { Hero } from './sections/Hero';
 import { About } from './sections/About';
 import { Skills } from './sections/Skills';
@@ -13,8 +15,11 @@ export default function App() {
     <div className="app">
       <div className="bg-vignette" aria-hidden="true" />
       <div className="bg-scanlines" aria-hidden="true" />
+      <div className="bg-sweep" aria-hidden="true" />
       <BootSequence />
       <IdleScreensaver />
+      <CursorFX />
+      <Konami />
 
       <Nav />
       <main>
@@ -34,7 +39,10 @@ export default function App() {
             built with{' '}
             <span className="text-dim">react · vite</span>
           </span>
-          <span className="text-faint">EOF</span>
+          <span className="text-faint">
+            <span className="text-dim">↑↑↓↓←→←→ba</span>{' '}
+            <span className="text-faint">// try it</span>
+          </span>
         </div>
         <style>{`
           .footer {

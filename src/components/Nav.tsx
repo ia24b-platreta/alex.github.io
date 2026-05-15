@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ThemeToggle } from './ThemeToggle';
 import { GitHubStats } from './GitHubStats';
+import { UptimeTicker } from './UptimeTicker';
 
 const LINKS = [
   { href: '#about', label: 'about' },
@@ -39,6 +40,7 @@ export function Nav() {
           ))}
         </nav>
         <div className="nav__right">
+          <UptimeTicker />
           <GitHubStats />
           <ThemeToggle />
         </div>
@@ -86,12 +88,8 @@ export function Nav() {
         }
         @media (prefers-reduced-motion: no-preference) {
           .nav__dot {
-            animation: pulse-dot 2s ease-in-out infinite;
+            animation: pulse-dot-anim 2s ease-in-out infinite;
           }
-        }
-        @keyframes pulse-dot {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.4; }
         }
         .nav__links {
           display: none;
@@ -116,6 +114,11 @@ export function Nav() {
         @media (min-width: 760px) {
           .nav__links {
             display: inline-flex;
+          }
+        }
+        @media (max-width: 840px) {
+          .nav__right .uptime {
+            display: none;
           }
         }
         @media (max-width: 720px) {

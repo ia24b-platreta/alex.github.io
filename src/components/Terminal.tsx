@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { findCommand, commandNames } from '../commands';
 import { useTheme } from '../theme';
 import { PromptLine } from './PromptLine';
+import { SystemTicker } from './SystemTicker';
 
 type EntryBody =
   | { kind: 'in'; text: string }
@@ -9,6 +10,12 @@ type EntryBody =
   | { kind: 'space' };
 
 type Entry = EntryBody & { id: number };
+
+const DEMO_SCRIPT = ['whoami', 'ls projects', 'man alex', 'sudo hire-me', 'clear'];
+const DEMO_START_DELAY = 6000;
+const DEMO_TYPE_CHAR_MS = 70;
+const DEMO_AFTER_TYPE_MS = 500;
+const DEMO_BETWEEN_CMDS_MS = 2200;
 
 const MAX_HISTORY = 50;
 const MAX_BUFFER = 200;
@@ -33,6 +40,12 @@ export function Terminal() {
   const idRef = useRef(WELCOME.length);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Auto-demo state
+  const [demoActive, setDemoActive] = useState(false);
+  const [ghostInput, setGhostInput] = useState('');
+  const userInteractedRef = useRef(false);
 
   const append = useCallback((...entries: EntryBody[]) => {
     setBuffer((b) => {
@@ -52,6 +65,7 @@ export function Terminal() {
   }, [buffer]);
 
   const focusInput = () => {
+    cancelDemo();
     inputRef.current?.focus();
   };
 
@@ -119,7 +133,92 @@ export function Terminal() {
     [append, theme, setTheme],
   );
 
+  const cancelDemo = useCallback(() => {
+    userInteractedRef.current = true;
+    setDemoActive(false);
+    setGhostInput('');
+  }, []);
+
+  // Trigger auto-demo when terminal scrolls into view and user is idle
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const el = sectionRef.current;
+    if (!el) return;
+    let startTimer: number | undefined;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !userInteractedRef.current) {
+          startTimer = window.setTimeout(() => {
+            if (!userInteractedRef.current) setDemoActive(true);
+          }, DEMO_START_DELAY);
+        } else if (!entry.isIntersecting) {
+          if (startTimer) window.clearTimeout(startTimer);
+          setDemoActive(false);
+          setGhostInput('');
+        }
+      },
+      { threshold: 0.35 },
+    );
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      if (startTimer) window.clearTimeout(startTimer);
+    };
+  }, []);
+
+  // The demo loop
+  useEffect(() => {
+    if (!demoActive) return;
+    let cancelled = false;
+    let scriptIdx = 0;
+    const timers: number[] = [];
+
+    const sleep = (ms: number) =>
+      new Promise<void>((resolve) => {
+        const t = window.setTimeout(resolve, ms);
+        timers.push(t);
+      });
+
+    const typeOut = async (cmd: string) => {
+      for (let i = 1; i <= cmd.length; i++) {
+        if (cancelled || userInteractedRef.current) return false;
+        setGhostInput(cmd.slice(0, i));
+        await sleep(DEMO_TYPE_CHAR_MS + Math.random() * 40);
+      }
+      return true;
+    };
+
+    const loop = async () => {
+      while (!cancelled && !userInteractedRef.current) {
+        const cmd = DEMO_SCRIPT[scriptIdx % DEMO_SCRIPT.length];
+        const ok = await typeOut(cmd);
+        if (!ok) return;
+        await sleep(DEMO_AFTER_TYPE_MS);
+        if (cancelled || userInteractedRef.current) return;
+        setGhostInput('');
+        runRef.current?.(cmd);
+        await sleep(DEMO_BETWEEN_CMDS_MS);
+        scriptIdx += 1;
+      }
+    };
+
+    loop();
+
+    return () => {
+      cancelled = true;
+      timers.forEach((t) => window.clearTimeout(t));
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [demoActive]);
+
+  const runRef = useRef<((raw: string) => void) | null>(null);
+  useEffect(() => {
+    runRef.current = run;
+  }, [run]);
+
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    cancelDemo();
     if (e.key === 'Enter') {
       e.preventDefault();
       run(input);
@@ -175,7 +274,7 @@ export function Terminal() {
   };
 
   return (
-    <section id="terminal" className="terminal-section">
+    <section id="terminal" className="terminal-section" ref={sectionRef}>
       <div className="container">
         <div className="terminal__cmd">
           <PromptLine cmd="./tty0" />
@@ -192,8 +291,11 @@ export function Terminal() {
             <span className="term__bar-pre text-faint">tty0</span>
             <span className="term__bar-dim text-faint">—</span>
             <span className="term__bar-title">alex@portfolio:~</span>
+            <span className="term__bar-sys text-dim">
+              <SystemTicker />
+            </span>
             <span className="term__bar-status" aria-hidden="true">
-              <span className="term__bar-dot" />
+              <span className="term__bar-dot pulse-dot" />
             </span>
           </div>
           <div className="term__body" ref={scrollRef}>
@@ -216,25 +318,42 @@ export function Terminal() {
 
             <div className="term__row term__input-row">
               <span className="prompt" />
-              <input
-                ref={inputRef}
-                value={input}
-                onChange={(ev) => {
-                  setInput(ev.target.value);
-                  if (hIndex !== -1) setHIndex(-1);
-                }}
-                onKeyDown={onKeyDown}
-                className="term__input"
-                spellCheck={false}
-                autoCapitalize="off"
-                autoCorrect="off"
-                autoComplete="off"
-                aria-label="Terminal input"
-                placeholder=""
-                inputMode="text"
-              />
-              <span className="caret term__caret" aria-hidden="true" />
+              {demoActive && ghostInput ? (
+                <>
+                  <span className="term__ghost">{ghostInput}</span>
+                  <span className="caret term__caret" aria-hidden="true" />
+                </>
+              ) : (
+                <>
+                  <input
+                    ref={inputRef}
+                    value={input}
+                    onChange={(ev) => {
+                      cancelDemo();
+                      setInput(ev.target.value);
+                      if (hIndex !== -1) setHIndex(-1);
+                    }}
+                    onFocus={cancelDemo}
+                    onKeyDown={onKeyDown}
+                    className="term__input"
+                    spellCheck={false}
+                    autoCapitalize="off"
+                    autoCorrect="off"
+                    autoComplete="off"
+                    aria-label="Terminal input"
+                    placeholder=""
+                    inputMode="text"
+                  />
+                  <span className="caret term__caret" aria-hidden="true" />
+                </>
+              )}
             </div>
+            {demoActive && (
+              <div className="term__demo-badge text-faint">
+                <span className="text-amber">★</span> auto-demo running ·{' '}
+                <span className="text-accent">click anywhere</span> to take over
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -276,6 +395,11 @@ export function Terminal() {
         .term__bar-pre { font-weight: 500; }
         .term__bar-dim { opacity: 0.6; }
         .term__bar-title { color: var(--text-dim); flex: 1; }
+        .term__bar-sys {
+          display: inline-flex;
+          align-items: center;
+          font-size: 0.78rem;
+        }
         .term__bar-status {
           display: inline-flex;
           align-items: center;
@@ -288,14 +412,8 @@ export function Terminal() {
           background: var(--accent);
           box-shadow: 0 0 8px var(--accent);
         }
-        @media (prefers-reduced-motion: no-preference) {
-          .term__bar-dot {
-            animation: pulse-dot 2.4s ease-in-out infinite;
-          }
-        }
-        @keyframes pulse-dot {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.55; transform: scale(0.85); }
+        @media (max-width: 580px) {
+          .term__bar-sys { display: none; }
         }
         .term__body {
           padding: 14px 16px 16px;
@@ -348,6 +466,18 @@ export function Terminal() {
         }
         .term__input:not(:focus) ~ .term__caret {
           opacity: 0.4;
+        }
+        .term__ghost {
+          color: var(--text-bright);
+          font: inherit;
+          opacity: 0.85;
+        }
+        .term__demo-badge {
+          margin-top: 14px;
+          font-size: 0.75rem;
+          letter-spacing: 0.02em;
+          padding-top: 8px;
+          border-top: 1px dashed var(--border);
         }
       `}</style>
     </section>
