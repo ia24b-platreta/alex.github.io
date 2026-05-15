@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { ThemeToggle } from './ThemeToggle';
 
 const LINKS = [
-  { href: '#about', label: 'About' },
-  { href: '#skills', label: 'Skills' },
-  { href: '#projects', label: 'Projects' },
-  { href: '#contact', label: 'Contact' },
+  { href: '#about', label: 'about' },
+  { href: '#skills', label: 'skills' },
+  { href: '#projects', label: 'projects' },
+  { href: '#contact', label: 'contact' },
 ];
 
 export function Nav() {
@@ -21,13 +21,17 @@ export function Nav() {
   return (
     <header className={`nav${scrolled ? ' nav--scrolled' : ''}`}>
       <div className="container nav__inner">
-        <a href="#top" className="nav__brand" aria-label="Alex Platreta, home">
-          <span className="nav__mark">A.</span>
-          <span className="nav__name">Alex Platreta</span>
+        <a href="#top" className="nav__brand" aria-label="alex.platreta — home">
+          <span className="nav__dot" aria-hidden="true" />
+          <span className="text-faint">user@</span>
+          <span className="text-dim">alex.platreta</span>
+          <span className="text-faint">:</span>
+          <span className="text-cyan">~/portfolio</span>
         </a>
         <nav aria-label="Primary" className="nav__links">
-          {LINKS.map((l) => (
+          {LINKS.map((l, i) => (
             <a key={l.href} href={l.href} className="nav__link">
+              <span className="text-faint">{String(i + 1).padStart(2, '0')}</span>{' '}
               {l.label}
             </a>
           ))}
@@ -39,66 +43,74 @@ export function Nav() {
           position: sticky;
           top: 0;
           z-index: 50;
-          padding-block: 14px;
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          background: color-mix(in srgb, var(--bg) 65%, transparent);
-          border-bottom: 1px solid transparent;
-          transition: border-color 240ms ease, background 240ms ease;
+          padding-block: 12px;
+          background: color-mix(in srgb, var(--bg) 88%, transparent);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          border-bottom: 1px dashed transparent;
+          transition: border-color 200ms ease;
+          font-size: 0.85rem;
         }
         .nav--scrolled {
           border-bottom-color: var(--border);
-          background: color-mix(in srgb, var(--bg) 82%, transparent);
         }
         .nav__inner {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          gap: 16px;
+          gap: 12px;
         }
         .nav__brand {
           display: inline-flex;
           align-items: center;
-          gap: 10px;
-          font-weight: 600;
-          letter-spacing: -0.01em;
+          gap: 6px;
+          border: none;
+          color: inherit;
         }
-        .nav__mark {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          width: 32px;
-          height: 32px;
-          border-radius: 10px;
-          background: linear-gradient(135deg, var(--accent), var(--accent-2));
-          color: #fff;
-          font-family: 'Geist Mono', ui-monospace, monospace;
-          font-size: 0.85rem;
-          font-weight: 600;
+        .nav__brand:hover {
+          color: inherit;
+          border-bottom: none;
+        }
+        .nav__dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: var(--accent);
+          box-shadow: 0 0 10px var(--accent);
+          margin-right: 4px;
+        }
+        @media (prefers-reduced-motion: no-preference) {
+          .nav__dot {
+            animation: pulse-dot 2s ease-in-out infinite;
+          }
+        }
+        @keyframes pulse-dot {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
         }
         .nav__links {
           display: none;
           align-items: center;
-          gap: 6px;
+          gap: 18px;
         }
         .nav__link {
-          padding: 8px 14px;
-          border-radius: 999px;
-          font-size: 0.92rem;
           color: var(--text-dim);
-          transition: color 180ms ease, background 180ms ease;
+          border-bottom: none;
+          font-size: 0.85rem;
+          transition: color 160ms ease;
         }
         .nav__link:hover {
-          color: var(--text);
-          background: var(--surface-2);
+          color: var(--accent);
+          border-bottom: none;
         }
-        @media (min-width: 720px) {
+        @media (min-width: 760px) {
           .nav__links {
             display: inline-flex;
           }
         }
-        @media (max-width: 480px) {
-          .nav__name {
+        @media (max-width: 540px) {
+          .nav__brand .text-faint:first-of-type,
+          .nav__brand .text-dim {
             display: none;
           }
         }

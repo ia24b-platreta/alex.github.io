@@ -8,9 +8,8 @@ import { Contact } from './sections/Contact';
 export default function App() {
   return (
     <div className="app">
-      <div className="bg-grain" aria-hidden="true" />
-      <div className="bg-blob bg-blob--violet" aria-hidden="true" />
-      <div className="bg-blob bg-blob--cyan" aria-hidden="true" />
+      <div className="bg-vignette" aria-hidden="true" />
+      <div className="bg-scanlines" aria-hidden="true" />
 
       <Nav />
       <main>
@@ -22,16 +21,20 @@ export default function App() {
       </main>
       <footer className="footer">
         <div className="container footer__inner">
-          <span>© {new Date().getFullYear()} Alex Platreta</span>
-          <span className="text-dim mono">
-            Built with React + Vite · Deployed via GitHub Actions
+          <span className="text-faint">
+            <span className="text-faint">{'// '}</span>
+            © {new Date().getFullYear()} alex.platreta &nbsp; build:&nbsp;
+            <span className="text-dim">react + vite</span>
+            &nbsp; deploy:&nbsp;
+            <span className="text-dim">github-pages</span>
           </span>
+          <span className="text-faint">EOF</span>
         </div>
         <style>{`
           .footer {
-            padding-block: 32px;
-            border-top: 1px solid var(--border);
-            font-size: 0.85rem;
+            padding-block: 24px;
+            border-top: 1px dashed var(--border);
+            font-size: 0.78rem;
           }
           .footer__inner {
             display: flex;

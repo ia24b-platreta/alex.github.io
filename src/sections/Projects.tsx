@@ -2,10 +2,10 @@ import { Reveal } from '../components/Reveal';
 import { ProjectCard } from '../components/ProjectCard';
 
 // TODO: replace these placeholders with your real projects.
-//       Add `href` to link out (e.g. a live demo or GitHub repo).
+//       Add `href` to link out (e.g. live demo or GitHub repo).
 const PROJECTS = [
   {
-    title: 'Project one',
+    slug: 'project_one',
     description:
       'A short, punchy description — what it does, why it matters, what was interesting to solve.',
     tags: ['TypeScript', 'React', 'Vite'],
@@ -14,7 +14,7 @@ const PROJECTS = [
     // href: 'https://github.com/ia24b-platreta/your-repo',
   },
   {
-    title: 'Project two',
+    slug: 'project_two',
     description:
       'Another standout build. Keep this to one or two sentences so the card stays scannable.',
     tags: ['Java', 'Thymeleaf', 'MySQL'],
@@ -22,7 +22,7 @@ const PROJECTS = [
     // href: 'https://github.com/ia24b-platreta/your-repo',
   },
   {
-    title: 'Project three',
+    slug: 'project_three',
     description:
       'Something small but well-crafted — a tool, a script, a weekend experiment.',
     tags: ['Python', 'MongoDB'],
@@ -36,49 +36,35 @@ export function Projects() {
     <section id="projects" className="projects">
       <div className="container">
         <Reveal>
-          <header className="projects__head">
-            <span className="projects__label mono">Selected work</span>
-            <h2>A few things I&rsquo;ve been building.</h2>
-          </header>
+          <div className="prompt-line">
+            <span className="prompt" />
+            <span className="cmd">ls</span>
+            <span className="arg">projects/</span>
+          </div>
         </Reveal>
 
-        <div className="projects__grid">
+        <Reveal delay={60}>
+          <div className="text-faint projects__total">total {PROJECTS.length}</div>
+        </Reveal>
+
+        <div className="projects__list">
           {PROJECTS.map((p, i) => (
-            <Reveal key={p.title} delay={i * 80}>
-              <ProjectCard {...p} />
+            <Reveal key={p.slug} delay={120 + i * 70}>
+              <ProjectCard index={i + 1} {...p} />
             </Reveal>
           ))}
         </div>
       </div>
       <style>{`
-        .projects__head {
+        .projects__total {
+          margin-top: 8px;
+          margin-bottom: 14px;
+          font-size: 0.85rem;
+        }
+        .projects__list {
           display: flex;
           flex-direction: column;
           gap: 10px;
-          margin-bottom: 32px;
-          max-width: 720px;
-        }
-        .projects__label {
-          font-size: 0.74rem;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          color: var(--text-faint);
-        }
-        .projects__grid {
-          display: grid;
-          gap: 16px;
-          grid-template-columns: 1fr;
-        }
-        @media (min-width: 720px) {
-          .projects__grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-          }
-        }
-        @media (min-width: 1024px) {
-          .projects__grid {
-            grid-template-columns: repeat(3, 1fr);
-          }
         }
       `}</style>
     </section>

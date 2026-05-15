@@ -5,10 +5,14 @@ export function About() {
     <section id="about" className="about">
       <div className="container about__inner">
         <Reveal>
-          <span className="about__label mono">About</span>
+          <div className="prompt-line">
+            <span className="prompt" />
+            <span className="cmd">cat</span>
+            <span className="arg">about.md</span>
+          </div>
         </Reveal>
-        <Reveal delay={80}>
-          {/* TODO: personalize bio — replace this copy with your own voice */}
+        <Reveal delay={60}>
+          {/* TODO: personalize bio — replace with your own voice */}
           <p className="about__body">
             I&rsquo;m a developer based in Zürich, currently sharpening my craft across
             modern web tooling and full-stack work. I enjoy turning fuzzy ideas into
@@ -21,20 +25,13 @@ export function About() {
         .about__inner {
           display: flex;
           flex-direction: column;
-          gap: 18px;
+          gap: 14px;
           max-width: 720px;
         }
-        .about__label {
-          font-size: 0.74rem;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          color: var(--text-faint);
-        }
         .about__body {
-          font-size: clamp(1.1rem, 1vw + 0.7rem, 1.35rem);
-          line-height: 1.55;
           color: var(--text);
-          letter-spacing: -0.005em;
+          font-size: 0.96rem;
+          line-height: 1.7;
           max-width: 65ch;
         }
       `}</style>

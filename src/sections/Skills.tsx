@@ -1,10 +1,9 @@
 import { Reveal } from '../components/Reveal';
-import { BentoGrid } from '../components/BentoGrid';
-import { BentoTile } from '../components/BentoTile';
 import { AchievementTile } from '../components/AchievementTile';
+import { DirRow } from '../components/BentoTile';
 import { ChipCloud } from '../components/SkillChip';
 
-const LANGUAGES = ['TypeScript', 'Java', 'Python', 'JavaScript', 'HTML / CSS', 'SQL', 'C', 'C#'];
+const LANGUAGES = ['TypeScript', 'Java', 'Python', 'JavaScript', 'HTML/CSS', 'SQL', 'C', 'C#'];
 const FRAMEWORKS = ['React', 'Thymeleaf', 'Bootstrap'];
 const TOOLS = ['Vite', 'Bun', 'NPM', 'Rollup', 'Node.js', 'Git'];
 const DATABASES = ['MySQL', 'MariaDB', 'MongoDB'];
@@ -14,94 +13,55 @@ export function Skills() {
     <section id="skills" className="skills">
       <div className="container">
         <Reveal>
-          <header className="skills__head">
-            <span className="skills__label mono">Stack &amp; recognition</span>
-            <h2>Things I build with — and what I&rsquo;ve done with them.</h2>
-          </header>
+          <div className="prompt-line">
+            <span className="prompt" />
+            <span className="cmd">cat</span>
+            <span className="arg">./achievements.log</span>
+          </div>
         </Reveal>
 
         <Reveal delay={80}>
-          <BentoGrid>
+          <div className="skills__ach">
             <AchievementTile />
+          </div>
+        </Reveal>
 
-            <BentoTile label="Location" colSpan={2} rowSpan={1}>
-              <div className="loc">
-                <div className="loc__pin" aria-hidden="true">
-                  <span className="loc__pulse" />
-                </div>
-                <div>
-                  <div className="loc__city">Zürich</div>
-                  <div className="loc__country text-dim">Switzerland 🇨🇭</div>
-                </div>
-              </div>
-            </BentoTile>
+        <Reveal delay={160}>
+          <div className="prompt-line skills__cmd2">
+            <span className="prompt" />
+            <span className="cmd">ls</span>
+            <span className="flag">-la</span>
+            <span className="arg">stack/</span>
+          </div>
+        </Reveal>
 
-            <BentoTile label="Languages" colSpan={3} rowSpan={2}>
-              <ChipCloud items={LANGUAGES} />
-            </BentoTile>
-
-            <BentoTile label="Frameworks" colSpan={3} rowSpan={1}>
-              <ChipCloud items={FRAMEWORKS} />
-            </BentoTile>
-
-            <BentoTile label="Tooling" colSpan={3} rowSpan={1}>
-              <ChipCloud items={TOOLS} />
-            </BentoTile>
-
-            <BentoTile label="Databases" colSpan={3} rowSpan={1}>
-              <ChipCloud items={DATABASES} />
-            </BentoTile>
-          </BentoGrid>
+        <Reveal delay={220}>
+          <div className="skills__listing">
+            <div className="text-faint listing__total">total 4</div>
+            <DirRow size="8" name="languages/" meta={<ChipCloud items={LANGUAGES} />} />
+            <DirRow size="3" name="frameworks/" meta={<ChipCloud items={FRAMEWORKS} />} />
+            <DirRow size="6" name="tools/" meta={<ChipCloud items={TOOLS} />} />
+            <DirRow size="3" name="databases/" meta={<ChipCloud items={DATABASES} />} />
+          </div>
         </Reveal>
       </div>
       <style>{`
-        .skills__head {
+        .skills__ach {
+          margin-top: 14px;
+          margin-bottom: 18px;
+        }
+        .skills__cmd2 {
+          margin-top: 28px;
+        }
+        .skills__listing {
+          margin-top: 12px;
           display: flex;
           flex-direction: column;
-          gap: 10px;
-          margin-bottom: 32px;
-          max-width: 720px;
+          gap: 4px;
         }
-        .skills__label {
-          font-size: 0.74rem;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          color: var(--text-faint);
-        }
-        .loc {
-          display: flex;
-          align-items: center;
-          gap: 14px;
-          height: 100%;
-        }
-        .loc__pin {
-          position: relative;
-          width: 12px;
-          height: 12px;
-          border-radius: 999px;
-          background: var(--accent-2);
-          box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-2) 18%, transparent);
-        }
-        @media (prefers-reduced-motion: no-preference) {
-          .loc__pulse {
-            position: absolute;
-            inset: -8px;
-            border-radius: 999px;
-            border: 1px solid var(--accent-2);
-            animation: pulse 2.4s ease-out infinite;
-          }
-        }
-        @keyframes pulse {
-          0% { transform: scale(0.6); opacity: 0.9; }
-          100% { transform: scale(1.8); opacity: 0; }
-        }
-        .loc__city {
-          font-size: 1.4rem;
-          font-weight: 600;
-          letter-spacing: -0.02em;
-        }
-        .loc__country {
-          font-size: 0.9rem;
+        .listing__total {
+          font-size: 0.85rem;
+          margin-bottom: 4px;
         }
       `}</style>
     </section>
