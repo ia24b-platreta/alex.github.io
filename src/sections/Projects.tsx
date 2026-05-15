@@ -1,5 +1,6 @@
 import { Reveal } from '../components/Reveal';
 import { ProjectCard } from '../components/ProjectCard';
+import { PromptLine } from '../components/PromptLine';
 
 // TODO: replace these placeholders with your real projects.
 //       Add `href` to link out (e.g. live demo or GitHub repo).
@@ -35,13 +36,7 @@ export function Projects() {
   return (
     <section id="projects" className="projects">
       <div className="container">
-        <Reveal>
-          <div className="prompt-line">
-            <span className="prompt" />
-            <span className="cmd">ls</span>
-            <span className="arg">projects/</span>
-          </div>
-        </Reveal>
+        <PromptLine cmd="ls" arg="projects/" />
 
         <Reveal delay={60}>
           <div className="text-faint projects__total">total {PROJECTS.length}</div>
@@ -57,7 +52,7 @@ export function Projects() {
       </div>
       <style>{`
         .projects__total {
-          margin-top: 8px;
+          margin-top: 10px;
           margin-bottom: 14px;
           font-size: 0.85rem;
         }

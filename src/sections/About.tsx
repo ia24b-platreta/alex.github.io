@@ -1,16 +1,11 @@
 import { Reveal } from '../components/Reveal';
+import { PromptLine } from '../components/PromptLine';
 
 export function About() {
   return (
     <section id="about" className="about">
       <div className="container about__inner">
-        <Reveal>
-          <div className="prompt-line">
-            <span className="prompt" />
-            <span className="cmd">cat</span>
-            <span className="arg">about.md</span>
-          </div>
-        </Reveal>
+        <PromptLine cmd="cat" arg="about.md" />
         <Reveal delay={60}>
           {/* TODO: personalize bio — replace with your own voice */}
           <p className="about__body">
@@ -25,7 +20,7 @@ export function About() {
         .about__inner {
           display: flex;
           flex-direction: column;
-          gap: 14px;
+          gap: 16px;
           max-width: 720px;
         }
         .about__body {

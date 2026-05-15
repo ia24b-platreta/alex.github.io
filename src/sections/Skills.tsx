@@ -3,6 +3,7 @@ import { AchievementTile } from '../components/AchievementTile';
 import { DirRow } from '../components/BentoTile';
 import { ChipCloud } from '../components/SkillChip';
 import { GitHubGraph } from '../components/GitHubGraph';
+import { PromptLine } from '../components/PromptLine';
 
 const LANGUAGES = ['TypeScript', 'Java', 'Python', 'JavaScript', 'HTML/CSS', 'SQL', 'C', 'C#'];
 const FRAMEWORKS = ['React', 'Thymeleaf', 'Bootstrap'];
@@ -13,13 +14,7 @@ export function Skills() {
   return (
     <section id="skills" className="skills">
       <div className="container">
-        <Reveal>
-          <div className="prompt-line">
-            <span className="prompt" />
-            <span className="cmd">cat</span>
-            <span className="arg">./achievements.log</span>
-          </div>
-        </Reveal>
+        <PromptLine cmd="cat" arg="./achievements.log" />
 
         <Reveal delay={80}>
           <div className="skills__ach">
@@ -33,16 +28,11 @@ export function Skills() {
           </div>
         </Reveal>
 
-        <Reveal delay={200}>
-          <div className="prompt-line skills__cmd2">
-            <span className="prompt" />
-            <span className="cmd">ls</span>
-            <span className="flag">-la</span>
-            <span className="arg">stack/</span>
-          </div>
-        </Reveal>
+        <div className="skills__cmd2">
+          <PromptLine cmd="ls" flag="-la" arg="stack/" />
+        </div>
 
-        <Reveal delay={220}>
+        <Reveal delay={120}>
           <div className="skills__listing">
             <div className="text-faint listing__total">total 4</div>
             <DirRow size="8" name="languages/" meta={<ChipCloud items={LANGUAGES} />} />
@@ -54,24 +44,24 @@ export function Skills() {
       </div>
       <style>{`
         .skills__ach {
-          margin-top: 14px;
-          margin-bottom: 24px;
+          margin-top: 18px;
+          margin-bottom: 28px;
         }
         .skills__graph {
-          margin-bottom: 24px;
+          margin-bottom: 32px;
         }
         .skills__cmd2 {
-          margin-top: 28px;
+          margin-top: 32px;
         }
         .skills__listing {
-          margin-top: 12px;
+          margin-top: 14px;
           display: flex;
           flex-direction: column;
           gap: 4px;
         }
         .listing__total {
           font-size: 0.85rem;
-          margin-bottom: 4px;
+          margin-bottom: 6px;
         }
       `}</style>
     </section>

@@ -1,9 +1,43 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Stats {
   repos: number;
   stars: number;
   followers: number;
+}
+
+function useCountUp(target: number, durationMs = 700) {
+  const [value, setValue] = useState(0);
+  const startRef = useRef<number | null>(null);
+  const rafRef = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setValue(target);
+      return;
+    }
+    if (target <= 0) {
+      setValue(0);
+      return;
+    }
+    startRef.current = null;
+    const step = (t: number) => {
+      if (startRef.current === null) startRef.current = t;
+      const elapsed = t - startRef.current;
+      const p = Math.min(1, elapsed / durationMs);
+      // ease-out cubic
+      const eased = 1 - Math.pow(1 - p, 3);
+      setValue(Math.round(target * eased));
+      if (p < 1) rafRef.current = requestAnimationFrame(step);
+    };
+    rafRef.current = requestAnimationFrame(step);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [target, durationMs]);
+
+  return value;
 }
 
 const USER = 'ia24b-platreta';
@@ -82,6 +116,16 @@ export function GitHubStats() {
 
   return (
     <>
+      <StatsLink stats={stats} />
+    </>
+  );
+}
+
+function StatsLink({ stats }: { stats: Stats }) {
+  const repos = useCountUp(stats.repos);
+  const stars = useCountUp(stats.stars);
+  return (
+    <>
       <a
         className="gh-stats"
         href={`https://github.com/${USER}`}
@@ -91,12 +135,12 @@ export function GitHubStats() {
       >
         <span className="text-faint">[ </span>
         <span className="text-dim">repos:</span>
-        <span className="text-accent">{stats.repos}</span>
+        <span className="text-accent gh-stats__num">{repos}</span>
         {stats.stars > 0 && (
           <>
             <span className="text-faint"> · </span>
             <span className="text-dim">★</span>
-            <span className="text-accent">{stats.stars}</span>
+            <span className="text-accent gh-stats__num">{stars}</span>
           </>
         )}
         <span className="text-faint"> ]</span>
@@ -111,6 +155,9 @@ export function GitHubStats() {
           border-bottom: none;
         }
         .gh-stats:hover { border-bottom: none; }
+        .gh-stats__num {
+          font-variant-numeric: tabular-nums;
+        }
       `}</style>
     </>
   );

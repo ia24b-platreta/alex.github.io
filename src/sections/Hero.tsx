@@ -147,19 +147,42 @@ export function Hero() {
         .hero__inner {
           display: flex;
           flex-direction: column;
-          gap: 10px;
+          gap: 14px;
           max-width: 760px;
           min-height: 60vh;
         }
         .hero__banner {
           font-family: inherit;
           color: var(--accent);
-          margin: 0 0 18px;
+          margin: 0 0 22px;
           font-size: clamp(0.5rem, 1.1vw + 0.3rem, 0.85rem);
           line-height: 1.05;
           white-space: pre;
           text-shadow: 0 0 12px color-mix(in srgb, var(--accent) 40%, transparent);
           overflow-x: auto;
+          position: relative;
+          background: linear-gradient(
+            90deg,
+            var(--accent) 0%,
+            var(--accent) 40%,
+            var(--text-bright) 50%,
+            var(--accent) 60%,
+            var(--accent) 100%
+          );
+          background-size: 220% 100%;
+          background-position: 100% 0;
+          background-clip: text;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+        @media (prefers-reduced-motion: no-preference) {
+          .hero__banner {
+            animation: banner-sheen 2.4s ease-out 0.2s 1 forwards;
+          }
+        }
+        @keyframes banner-sheen {
+          0%   { background-position: 100% 0; }
+          100% { background-position: 0    0; }
         }
         [data-theme='light'] .hero__banner {
           text-shadow: none;
@@ -185,7 +208,7 @@ export function Hero() {
           display: flex;
           flex-wrap: wrap;
           gap: 10px;
-          margin-top: 18px;
+          margin-top: 24px;
         }
       `}</style>
     </section>

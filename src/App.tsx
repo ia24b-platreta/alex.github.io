@@ -28,24 +28,24 @@ export default function App() {
       <footer className="footer">
         <div className="container footer__inner">
           <span className="text-faint">
-            <span className="text-faint">{'// '}</span>
-            © {new Date().getFullYear()} alex.platreta &nbsp; build:&nbsp;
-            <span className="text-dim">react + vite</span>
-            &nbsp; deploy:&nbsp;
-            <span className="text-dim">github-pages</span>
+            © {new Date().getFullYear()} alex.platreta
+          </span>
+          <span className="text-faint">
+            built with{' '}
+            <span className="text-dim">react · vite</span>
           </span>
           <span className="text-faint">EOF</span>
         </div>
         <style>{`
           .footer {
-            padding-block: 24px;
+            padding-block: 28px;
             border-top: 1px dashed var(--border);
             font-size: 0.78rem;
           }
           .footer__inner {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 14px;
             justify-content: space-between;
             align-items: center;
           }

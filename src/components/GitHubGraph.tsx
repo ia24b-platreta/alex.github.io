@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { PromptLine } from './PromptLine';
 
 interface Day {
   date: string;
@@ -93,9 +94,7 @@ export function GitHubGraph() {
     return (
       <div className="ghg">
         <div className="ghg__head">
-          <span className="prompt" />
-          <span className="cmd text-bright">cat</span>{' '}
-          <span className="arg">~/.git/contributions.log</span>
+          <PromptLine cmd="cat" arg="~/.git/contributions.log" />
         </div>
         <p className="text-dim ghg__loading">loading github activity…</p>
         <style>{`

@@ -1,4 +1,5 @@
 import { Reveal } from '../components/Reveal';
+import { PromptLine } from '../components/PromptLine';
 
 const EMAIL = 'platret.alex@gmail.com';
 const GITHUB = 'https://github.com/ia24b-platreta';
@@ -8,15 +9,9 @@ export function Contact() {
   return (
     <section id="contact" className="contact">
       <div className="container contact__inner">
-        <Reveal>
-          <div className="prompt-line">
-            <span className="prompt" />
-            <span className="cmd">contact</span>
-            <span className="flag">--help</span>
-          </div>
-        </Reveal>
+        <PromptLine cmd="contact" flag="--help" />
 
-        <Reveal delay={60}>
+        <Reveal delay={120}>
           <pre className="contact__usage">{`Usage: reach out to alex.
 
 Channels:
@@ -25,7 +20,7 @@ Channels:
 `}</pre>
         </Reveal>
 
-        <Reveal delay={140}>
+        <Reveal delay={200}>
           <div className="contact__rows">
             <div className="contact__row">
               <span className="contact__key text-faint">email&nbsp;&nbsp;</span>
@@ -40,7 +35,7 @@ Channels:
           </div>
         </Reveal>
 
-        <Reveal delay={220}>
+        <Reveal delay={280}>
           <div className="prompt-line contact__cursor">
             <span className="prompt" />
             <span className="caret" aria-hidden="true" />
@@ -51,7 +46,7 @@ Channels:
         .contact__inner {
           display: flex;
           flex-direction: column;
-          gap: 14px;
+          gap: 16px;
           max-width: 680px;
         }
         .contact__usage {
@@ -81,7 +76,7 @@ Channels:
           color: var(--accent);
         }
         .contact__cursor {
-          margin-top: 12px;
+          margin-top: 14px;
         }
       `}</style>
     </section>

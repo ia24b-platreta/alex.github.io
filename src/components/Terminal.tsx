@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { findCommand, commandNames } from '../commands';
 import { useTheme } from '../theme';
+import { PromptLine } from './PromptLine';
 
 type EntryBody =
   | { kind: 'in'; text: string }
@@ -177,9 +178,8 @@ export function Terminal() {
     <section id="terminal" className="terminal-section">
       <div className="container">
         <div className="terminal__cmd">
-          <span className="prompt" />
-          <span className="cmd text-bright">./tty0</span>{' '}
-          <span className="text-faint">// type below — try `help`</span>
+          <PromptLine cmd="./tty0" />
+          <span className="terminal__hint text-faint">// type below — try `help`</span>
         </div>
 
         <div
@@ -189,10 +189,12 @@ export function Terminal() {
           aria-label="Interactive terminal. Type help to see commands."
         >
           <div className="term__bar">
-            <span className="term__dot term__dot--r" aria-hidden="true" />
-            <span className="term__dot term__dot--y" aria-hidden="true" />
-            <span className="term__dot term__dot--g" aria-hidden="true" />
-            <span className="term__title">tty0 — alex@portfolio</span>
+            <span className="term__bar-pre text-faint">tty0</span>
+            <span className="term__bar-dim text-faint">—</span>
+            <span className="term__bar-title">alex@portfolio:~</span>
+            <span className="term__bar-status" aria-hidden="true">
+              <span className="term__bar-dot" />
+            </span>
           </div>
           <div className="term__body" ref={scrollRef}>
             {buffer.map((e) => {
@@ -241,8 +243,15 @@ export function Terminal() {
           padding-block: clamp(40px, 6vw, 64px);
         }
         .terminal__cmd {
-          margin-bottom: 14px;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          align-items: baseline;
+          margin-bottom: 16px;
           font-size: 0.95rem;
+        }
+        .terminal__hint {
+          font-size: 0.82rem;
         }
         .term {
           border: 1px solid var(--border-strong);
@@ -257,28 +266,36 @@ export function Terminal() {
         .term__bar {
           display: flex;
           align-items: center;
-          gap: 6px;
-          padding: 8px 12px;
+          gap: 10px;
+          padding: 10px 14px;
           border-bottom: 1px solid var(--border);
           background: var(--surface);
           font-size: 0.78rem;
-          color: var(--text-faint);
-        }
-        .term__dot {
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
-          background: var(--text-faint);
-          display: inline-block;
-        }
-        .term__dot--r { background: #ef4444; }
-        .term__dot--y { background: #f59e0b; }
-        .term__dot--g { background: var(--accent); }
-        .term__title {
-          margin-left: 8px;
-          flex: 1;
-          text-align: center;
           letter-spacing: 0.02em;
+        }
+        .term__bar-pre { font-weight: 500; }
+        .term__bar-dim { opacity: 0.6; }
+        .term__bar-title { color: var(--text-dim); flex: 1; }
+        .term__bar-status {
+          display: inline-flex;
+          align-items: center;
+        }
+        .term__bar-dot {
+          display: inline-block;
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: var(--accent);
+          box-shadow: 0 0 8px var(--accent);
+        }
+        @media (prefers-reduced-motion: no-preference) {
+          .term__bar-dot {
+            animation: pulse-dot 2.4s ease-in-out infinite;
+          }
+        }
+        @keyframes pulse-dot {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.55; transform: scale(0.85); }
         }
         .term__body {
           padding: 14px 16px 16px;

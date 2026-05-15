@@ -2,89 +2,77 @@ export function AchievementTile() {
   return (
     <>
       <div className="ach">
-        <pre className="ach__frame">{`┌──────────────────────────────────────────────────────────────┐
-│  Regionalmeisterschaften 2026                                │
-│                                                              │
-│    >  Switzerland  ........................  rank 11         │
-│    >  Zürich       ........................  rank  4         │
-│                                                              │
-│  // top 11 / CH · top 4 / ZH                                 │
-└──────────────────────────────────────────────────────────────┘`}</pre>
-
-        <div className="ach__compact">
-          <div className="ach__title">Regionalmeisterschaften 2026</div>
-          <div className="ach__row">
-            <span className="ach__where">Switzerland</span>
-            <span className="ach__dots" aria-hidden="true">·························</span>
-            <span className="ach__rank text-amber">rank 11</span>
-          </div>
-          <div className="ach__row">
-            <span className="ach__where">Zürich</span>
-            <span className="ach__dots" aria-hidden="true">······························</span>
-            <span className="ach__rank text-amber">rank&nbsp; 4</span>
-          </div>
-          <div className="ach__comment text-faint">// top 11 / CH · top 4 / ZH</div>
+        <div className="ach__title">
+          <span className="text-amber">★</span>{' '}
+          <span className="text-bright">Regionalmeisterschaften</span>{' '}
+          <span className="text-faint mono">2026</span>
         </div>
+        <div className="ach__tree">
+          <div className="ach__row">
+            <span className="text-faint">├─</span>{' '}
+            <span className="text-dim">Switzerland</span>{' '}
+            <span className="ach__dots" aria-hidden="true" />
+            <span className="text-amber mono">rank 11</span>
+          </div>
+          <div className="ach__row">
+            <span className="text-faint">└─</span>{' '}
+            <span className="text-dim">Zürich</span>{' '}
+            <span className="ach__dots" aria-hidden="true" />
+            <span className="text-amber mono">rank&nbsp; 4</span>
+          </div>
+        </div>
+        <div className="ach__comment text-faint">// top 11 / CH · top 4 / ZH</div>
       </div>
       <style>{`
         .ach {
-          color: var(--text);
-        }
-        .ach__frame {
-          font-family: inherit;
-          font-size: 0.78rem;
-          line-height: 1.3;
-          color: var(--accent-dim);
-          white-space: pre;
-          margin: 0;
-          overflow-x: auto;
-        }
-        .ach__frame {
-          text-shadow: 0 0 8px color-mix(in srgb, var(--accent) 30%, transparent);
-        }
-        [data-theme='light'] .ach__frame {
-          text-shadow: none;
-          color: var(--accent);
-        }
-        .ach__compact {
-          display: none;
+          display: flex;
           flex-direction: column;
-          gap: 4px;
-          padding: 14px;
-          border: 1px dashed var(--border-strong);
-          font-size: 0.88rem;
+          gap: 8px;
+          padding: 18px 20px;
+          border: 1px dashed var(--border);
+          background: color-mix(in srgb, var(--surface) 60%, transparent);
+          position: relative;
+          overflow: hidden;
+          transition: border-color 240ms ease, box-shadow 240ms ease;
+        }
+        .ach::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0;
+          height: 2px;
+          background: linear-gradient(90deg, transparent, var(--amber), transparent);
+          opacity: 0.35;
+        }
+        .ach:hover {
+          border-color: color-mix(in srgb, var(--amber) 50%, var(--border));
+          box-shadow: 0 0 24px color-mix(in srgb, var(--amber) 8%, transparent);
         }
         .ach__title {
-          color: var(--text-bright);
-          margin-bottom: 6px;
+          font-size: 1rem;
+          letter-spacing: -0.005em;
+        }
+        .ach__tree {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          font-size: 0.95rem;
         }
         .ach__row {
           display: flex;
           align-items: baseline;
           gap: 6px;
-        }
-        .ach__where {
-          color: var(--text);
+          font-variant-numeric: tabular-nums;
         }
         .ach__dots {
           flex: 1;
-          color: var(--text-faint);
-          overflow: hidden;
-          white-space: nowrap;
-        }
-        .ach__rank {
-          font-variant-numeric: tabular-nums;
+          height: 1em;
+          border-bottom: 1px dotted var(--text-faint);
+          margin-bottom: 0.25em;
+          min-width: 24px;
         }
         .ach__comment {
-          margin-top: 6px;
-        }
-        @media (max-width: 640px) {
-          .ach__frame {
-            display: none;
-          }
-          .ach__compact {
-            display: flex;
-          }
+          font-size: 0.82rem;
+          margin-top: 4px;
         }
       `}</style>
     </>
