@@ -2,6 +2,7 @@ import { Reveal } from '../components/Reveal';
 import { AchievementTile } from '../components/AchievementTile';
 import { DirRow } from '../components/BentoTile';
 import { ChipCloud } from '../components/SkillChip';
+import { GitHubGraph } from '../components/GitHubGraph';
 
 const LANGUAGES = ['TypeScript', 'Java', 'Python', 'JavaScript', 'HTML/CSS', 'SQL', 'C', 'C#'];
 const FRAMEWORKS = ['React', 'Thymeleaf', 'Bootstrap'];
@@ -26,7 +27,13 @@ export function Skills() {
           </div>
         </Reveal>
 
-        <Reveal delay={160}>
+        <Reveal delay={140}>
+          <div className="skills__graph">
+            <GitHubGraph />
+          </div>
+        </Reveal>
+
+        <Reveal delay={200}>
           <div className="prompt-line skills__cmd2">
             <span className="prompt" />
             <span className="cmd">ls</span>
@@ -48,7 +55,10 @@ export function Skills() {
       <style>{`
         .skills__ach {
           margin-top: 14px;
-          margin-bottom: 18px;
+          margin-bottom: 24px;
+        }
+        .skills__graph {
+          margin-bottom: 24px;
         }
         .skills__cmd2 {
           margin-top: 28px;

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ThemeToggle } from './ThemeToggle';
+import { GitHubStats } from './GitHubStats';
 
 const LINKS = [
   { href: '#about', label: 'about' },
@@ -37,7 +38,10 @@ export function Nav() {
             </a>
           ))}
         </nav>
-        <ThemeToggle />
+        <div className="nav__right">
+          <GitHubStats />
+          <ThemeToggle />
+        </div>
       </div>
       <style>{`
         .nav {
@@ -104,9 +108,19 @@ export function Nav() {
           color: var(--accent);
           border-bottom: none;
         }
+        .nav__right {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+        }
         @media (min-width: 760px) {
           .nav__links {
             display: inline-flex;
+          }
+        }
+        @media (max-width: 720px) {
+          .nav__right .gh-stats {
+            display: none;
           }
         }
         @media (max-width: 540px) {

@@ -1,5 +1,6 @@
 import { Nav } from './components/Nav';
 import { BootSequence } from './components/BootSequence';
+import { IdleScreensaver } from './components/IdleScreensaver';
 import { Hero } from './sections/Hero';
 import { About } from './sections/About';
 import { Skills } from './sections/Skills';
@@ -13,6 +14,7 @@ export default function App() {
       <div className="bg-vignette" aria-hidden="true" />
       <div className="bg-scanlines" aria-hidden="true" />
       <BootSequence />
+      <IdleScreensaver />
 
       <Nav />
       <main>
